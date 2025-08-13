@@ -1205,7 +1205,7 @@ if __name__ == "__main__":
                     st.session_state["faqs"] = top_questions
                
                 if status:
-                    # Add CSS for uniform FAQ button widths with tight spacing
+                    # Add CSS for uniform FAQ button widths with stronger targeting
                     st.sidebar.markdown("""
                     <style>
                     .faq-buttons-wrapper {
@@ -1215,17 +1215,25 @@ if __name__ == "__main__":
                     }
                     .faq-buttons-wrapper .stButton {
                         margin-bottom: 0 !important;
+                        flex: none !important;
                     }
-                    .faq-buttons-wrapper .stButton > button {
-                        width: 250px !important;
-                        min-width: 250px !important;
-                        max-width: 250px !important;
+                    .faq-buttons-wrapper .stButton > button,
+                    .faq-buttons-wrapper [data-testid="button"],
+                    .faq-buttons-wrapper button[kind="secondary"] {
+                        width: 280px !important;
+                        min-width: 280px !important;
+                        max-width: 280px !important;
+                        box-sizing: border-box !important;
+                        flex: none !important;
                         white-space: normal !important;
                         word-wrap: break-word !important;
                         text-align: left !important;
                         height: auto !important;
                         padding: 0.11rem !important;
                         margin: 0 !important;
+                        overflow: hidden !important;
+                        text-overflow: ellipsis !important;
+                        display: block !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
