@@ -513,17 +513,6 @@ st.sidebar.markdown(
                             transition: all 0.3s ease;
                             border-left: 4px solid #f4a460;
                             color: grey;
-                            height: 80px !important;
-                            min-height: 80px !important;
-                            max-height: 80px !important;
-                            width: 100% !important;
-                            white-space: normal !important;
-                            overflow: hidden !important;
-                            text-overflow: ellipsis !important;
-                            display: flex !important;
-                            align-items: center !important;
-                            justify-content: center !important;
-                            text-align: center !important;
                         }
                         div.stButton > button:hover {
                             # background-color: #f0f0f0;
@@ -532,12 +521,21 @@ st.sidebar.markdown(
                             border-left-color: #764ba2;
                             background-color: white !important;
                             color: darkorange !important;
-                            height: 80px !important;
-                            min-height: 80px !important;
-                            max-height: 80px !important;
                         }
                         div.stButton > button:focus {
                             outline: none;
+                        }
+                        /* FAQ-specific button styling for uniform width */
+                        div.stButton > button[data-testid*="faq_"] {
+                            width: 280px !important;
+                            min-width: 280px !important;
+                            max-width: 280px !important;
+                        }
+                        /* Alternative selector for FAQ buttons */
+                        div[data-testid*="faq_"] button {
+                            width: 280px !important;
+                            min-width: 280px !important;
+                            max-width: 280px !important;
                         }
                         </style>
                         """,
