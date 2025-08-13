@@ -525,18 +525,6 @@ st.sidebar.markdown(
                         div.stButton > button:focus {
                             outline: none;
                         }
-                        /* FAQ-specific button styling for uniform width */
-                        div.stButton > button[data-testid*="faq_"] {
-                            width: 280px !important;
-                            min-width: 280px !important;
-                            max-width: 280px !important;
-                        }
-                        /* Alternative selector for FAQ buttons */
-                        div[data-testid*="faq_"] button {
-                            width: 280px !important;
-                            min-width: 280px !important;
-                            max-width: 280px !important;
-                        }
                         </style>
                         """,
                         unsafe_allow_html=True
@@ -1207,6 +1195,24 @@ if __name__ == "__main__":
             # Regular chat interface
             # FAQs
             st.sidebar.header("FAQs")
+            
+            # Add CSS specifically for FAQ buttons with wrapper approach
+            st.sidebar.markdown("""
+            <style>
+            .faq-buttons-container .stButton > button {
+                width: 100% !important;
+                min-width: 250px !important;
+                max-width: 250px !important;
+                white-space: normal !important;
+                word-wrap: break-word !important;
+                text-align: left !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Wrap FAQ buttons in a container with specific class
+            st.sidebar.markdown('<div class="faq-buttons-container">', unsafe_allow_html=True)
+            
             try:
                 # Cached version that runs in background thread
                 status = True
@@ -1217,7 +1223,6 @@ if __name__ == "__main__":
                
                 if status:
                     for i, (q, cnt) in enumerate(st.session_state["faqs"].items()):
-                        # st.sidebar.markdown(f'<div class="faq-btn-wrap">', unsafe_allow_html=True)
                         # Standardize all FAQ button text to exactly 45 characters for consistency
                         truncated_q = q[:45] + "..." if len(q) > 45 else q
                         button_text = f"Q: {truncated_q}\n(Asked {cnt} times)"
@@ -1226,12 +1231,15 @@ if __name__ == "__main__":
                             key=f"faq_{i}"
                         ):
                             st.session_state["input_text"] = q
- 
+
                        
                 else:
-                    st.info("No FAQs available at the moment.")
+                    st.sidebar.info("No FAQs available at the moment.")
             except Exception as e:
-                st.warning("FAQs temporarily unavailable")
+                st.sidebar.warning("FAQs temporarily unavailable")
+            
+            # Close the FAQ buttons container
+            st.sidebar.markdown('</div>', unsafe_allow_html=True)
  
  
         # Backend-only session creation function
