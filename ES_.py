@@ -1205,71 +1205,41 @@ if __name__ == "__main__":
                     st.session_state["faqs"] = top_questions
                
                 if status:
-                    # Add CSS for custom FAQ buttons (outside the loop)
+                    # Add CSS for uniform FAQ button widths using columns
                     st.sidebar.markdown("""
                     <style>
-                    .custom-faq-button {
-                        background: linear-gradient(135deg, #ffff 80%, #FF4500 100%);
-                        border-radius: 10px;
-                        padding: 0.11rem;
-                        margin-bottom: 0.5rem;
-                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                        transition: all 0.3s ease;
-                        border-left: 4px solid #f4a460;
-                        color: grey;
-                        width: 280px !important;
-                        min-width: 280px !important;
-                        max-width: 280px !important;
-                        border: none;
-                        cursor: pointer;
-                        text-align: left;
-                        font-size: 14px;
-                        font-family: inherit;
-                        white-space: normal;
-                        word-wrap: break-word;
-                        display: block;
-                    }
-                    .custom-faq-button:hover {
-                        transform: translateX(5px);
-                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-                        border-left-color: #764ba2;
-                        background-color: white !important;
-                        color: darkorange !important;
-                    }
-                    .faq-container {
-                        margin-bottom: 0.5rem;
+                    .faq-column .stButton > button {
+                        width: 100% !important;
+                        min-width: 250px !important;
+                        max-width: 250px !important;
+                        white-space: normal !important;
+                        word-wrap: break-word !important;
+                        text-align: left !important;
+                        height: auto !important;
+                        padding: 0.5rem !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
                     
-                    # Create custom HTML buttons for FAQs
+                    # Create FAQ buttons using columns for uniform width
                     for i, (q, cnt) in enumerate(st.session_state["faqs"].items()):
-                        # Create a container for each FAQ
-                        st.sidebar.markdown(f'<div class="faq-container" id="faq_container_{i}">', unsafe_allow_html=True)
-                        
-                        # Standardize all FAQ button text to exactly 45 characters for consistency
-                        truncated_q = q[:45] + "..." if len(q) > 45 else q
-                        button_text = f"Q: {truncated_q}<br>(Asked {cnt} times)"
-                        
-                        # Create HTML button with JavaScript click handler
-                        st.sidebar.markdown(f"""
-                        <button class="custom-faq-button" onclick="
-                            var hiddenBtn = parent.document.querySelector('[data-testid=\\'button\\'][title=\\'faq_trigger_{i}\\']');
-                            if (hiddenBtn) hiddenBtn.click();
-                        ">
-                            {button_text}
-                        </button>
-                        """, unsafe_allow_html=True)
-                        
-                        # Close the container
-                        st.sidebar.markdown('</div>', unsafe_allow_html=True)
-                        
-                        # Hidden Streamlit button that gets triggered by HTML button
-                        if st.sidebar.button("Hidden FAQ Trigger", key=f"faq_trigger_{i}",
-                                           help=f"faq_trigger_{i}",
-                                           label_visibility="collapsed"):
-                            st.session_state["input_text"] = q
-                            st.rerun()
+                        # Create a single column to constrain button width
+                        with st.sidebar.container():
+                            st.markdown('<div class="faq-column">', unsafe_allow_html=True)
+                            
+                            # Standardize all FAQ button text to exactly 45 characters for consistency
+                            truncated_q = q[:45] + "..." if len(q) > 45 else q
+                            button_text = f"Q: {truncated_q}\n(Asked {cnt} times)"
+                            
+                            if st.button(
+                                button_text,
+                                key=f"faq_{i}",
+                                use_container_width=True
+                            ):
+                                st.session_state["input_text"] = q
+                                st.rerun()
+                            
+                            st.markdown('</div>', unsafe_allow_html=True)
                        
                 else:
                     st.sidebar.info("No FAQs available at the moment.")
