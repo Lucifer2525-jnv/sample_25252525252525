@@ -1205,7 +1205,7 @@ if __name__ == "__main__":
                     st.session_state["faqs"] = top_questions
                
                 if status:
-                    # Add CSS for custom FAQ buttons
+                    # Add CSS for custom FAQ buttons (outside the loop)
                     st.sidebar.markdown("""
                     <style>
                     .custom-faq-button {
@@ -1236,14 +1236,17 @@ if __name__ == "__main__":
                         background-color: white !important;
                         color: darkorange !important;
                     }
-                    .hidden-faq-trigger {
-                        display: none;
+                    .faq-container {
+                        margin-bottom: 0.5rem;
                     }
                     </style>
                     """, unsafe_allow_html=True)
                     
                     # Create custom HTML buttons for FAQs
                     for i, (q, cnt) in enumerate(st.session_state["faqs"].items()):
+                        # Create a container for each FAQ
+                        st.sidebar.markdown(f'<div class="faq-container" id="faq_container_{i}">', unsafe_allow_html=True)
+                        
                         # Standardize all FAQ button text to exactly 45 characters for consistency
                         truncated_q = q[:45] + "..." if len(q) > 45 else q
                         button_text = f"Q: {truncated_q}<br>(Asked {cnt} times)"
@@ -1251,15 +1254,20 @@ if __name__ == "__main__":
                         # Create HTML button with JavaScript click handler
                         st.sidebar.markdown(f"""
                         <button class="custom-faq-button" onclick="
-                            document.getElementById('faq_trigger_{i}').click();
+                            var hiddenBtn = parent.document.querySelector('[data-testid=\\'button\\'][title=\\'faq_trigger_{i}\\']');
+                            if (hiddenBtn) hiddenBtn.click();
                         ">
                             {button_text}
                         </button>
                         """, unsafe_allow_html=True)
                         
+                        # Close the container
+                        st.sidebar.markdown('</div>', unsafe_allow_html=True)
+                        
                         # Hidden Streamlit button that gets triggered by HTML button
-                        if st.sidebar.button("", key=f"faq_trigger_{i}", help="FAQ trigger",
-                                           label_visibility="hidden"):
+                        if st.sidebar.button("Hidden FAQ Trigger", key=f"faq_trigger_{i}",
+                                           help=f"faq_trigger_{i}",
+                                           label_visibility="collapsed"):
                             st.session_state["input_text"] = q
                             st.rerun()
                        
