@@ -1208,6 +1208,13 @@ if __name__ == "__main__":
                     # Add CSS for uniform FAQ button widths using columns
                     st.sidebar.markdown("""
                     <style>
+                    .faq-column {
+                        margin-bottom: 0.01rem !important;
+                        padding: 0 !important;
+                    }
+                    .faq-column .stButton {
+                        margin-bottom: 0.01rem !important;
+                    }
                     .faq-column .stButton > button {
                         width: 100% !important;
                         min-width: 250px !important;
@@ -1216,7 +1223,8 @@ if __name__ == "__main__":
                         word-wrap: break-word !important;
                         text-align: left !important;
                         height: auto !important;
-                        padding: 0.5rem !important;
+                        padding: 0.11rem !important;
+                        margin-bottom: 0.01rem !important;
                     }
                     </style>
                     """, unsafe_allow_html=True)
