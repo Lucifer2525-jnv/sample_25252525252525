@@ -1196,23 +1196,6 @@ if __name__ == "__main__":
             # FAQs
             st.sidebar.header("FAQs")
             
-            # Add CSS specifically for FAQ buttons with wrapper approach
-            st.sidebar.markdown("""
-            <style>
-            .faq-buttons-container .stButton > button {
-                width: 100% !important;
-                min-width: 250px !important;
-                max-width: 250px !important;
-                white-space: normal !important;
-                word-wrap: break-word !important;
-                text-align: left !important;
-            }
-            </style>
-            """, unsafe_allow_html=True)
-            
-            # Wrap FAQ buttons in a container with specific class
-            st.sidebar.markdown('<div class="faq-buttons-container">', unsafe_allow_html=True)
-            
             try:
                 # Cached version that runs in background thread
                 status = True
@@ -1222,24 +1205,68 @@ if __name__ == "__main__":
                     st.session_state["faqs"] = top_questions
                
                 if status:
+                    # Add CSS for custom FAQ buttons
+                    st.sidebar.markdown("""
+                    <style>
+                    .custom-faq-button {
+                        background: linear-gradient(135deg, #ffff 80%, #FF4500 100%);
+                        border-radius: 10px;
+                        padding: 0.11rem;
+                        margin-bottom: 0.5rem;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                        transition: all 0.3s ease;
+                        border-left: 4px solid #f4a460;
+                        color: grey;
+                        width: 280px !important;
+                        min-width: 280px !important;
+                        max-width: 280px !important;
+                        border: none;
+                        cursor: pointer;
+                        text-align: left;
+                        font-size: 14px;
+                        font-family: inherit;
+                        white-space: normal;
+                        word-wrap: break-word;
+                        display: block;
+                    }
+                    .custom-faq-button:hover {
+                        transform: translateX(5px);
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+                        border-left-color: #764ba2;
+                        background-color: white !important;
+                        color: darkorange !important;
+                    }
+                    .hidden-faq-trigger {
+                        display: none;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
+                    # Create custom HTML buttons for FAQs
                     for i, (q, cnt) in enumerate(st.session_state["faqs"].items()):
                         # Standardize all FAQ button text to exactly 45 characters for consistency
                         truncated_q = q[:45] + "..." if len(q) > 45 else q
-                        button_text = f"Q: {truncated_q}\n(Asked {cnt} times)"
-                        if st.sidebar.button(
-                            button_text,
-                            key=f"faq_{i}"
-                        ):
+                        button_text = f"Q: {truncated_q}<br>(Asked {cnt} times)"
+                        
+                        # Create HTML button with JavaScript click handler
+                        st.sidebar.markdown(f"""
+                        <button class="custom-faq-button" onclick="
+                            document.getElementById('faq_trigger_{i}').click();
+                        ">
+                            {button_text}
+                        </button>
+                        """, unsafe_allow_html=True)
+                        
+                        # Hidden Streamlit button that gets triggered by HTML button
+                        if st.sidebar.button("", key=f"faq_trigger_{i}", help="FAQ trigger",
+                                           label_visibility="hidden"):
                             st.session_state["input_text"] = q
-
+                            st.rerun()
                        
                 else:
                     st.sidebar.info("No FAQs available at the moment.")
             except Exception as e:
                 st.sidebar.warning("FAQs temporarily unavailable")
-            
-            # Close the FAQ buttons container
-            st.sidebar.markdown('</div>', unsafe_allow_html=True)
  
  
         # Backend-only session creation function
